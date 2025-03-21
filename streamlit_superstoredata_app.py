@@ -30,6 +30,17 @@ st.markdown(
 # Load data
 dataframe = pd.read_excel("Sample - Superstore.xls")
 
+# Convert 'Order Date' to datetime
+dataframe['Order Date'] = pd.to_datetime(dataframe['Order Date'])
+
+# Group data by month and year to calculate profit
+dataframe['Year-Month'] = dataframe['Order Date'].dt.to_period('M')
+profit_over_time = dataframe.groupby('Year-Month')['Profit'].sum().reset_index()
+profit_over_time['Year-Month'] = profit_over_time['Year-Month'].dt.to_timestamp()
+
+# Create a line chart showing profit over time
+st.line_chart(data=profit_over_time.set_index('Year-Month')['Profit'])
+
 # Add filters at the top
 st.header("Filters")
 
