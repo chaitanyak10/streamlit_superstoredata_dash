@@ -30,6 +30,17 @@ st.markdown(
 # Load data
 dataframe = pd.read_excel("Sample - Superstore.xls")
 
+# Create a slope chart showing profit for sub-category
+profit_by_subcategory = dataframe.groupby(['Sub-Category', 'Order Year'], as_index=False)['Profit'].sum()
+profit_pivot = profit_by_subcategory.pivot(index='Sub-Category', columns='Order Year', values='Profit')
+
+# Normalize the data for better visualization
+profit_pivot_normalized = profit_pivot.div(profit_pivot.max(axis=1), axis=0)
+
+# Plot the slope chart
+st.header("Profit Slope Chart by Sub-Category")
+st.line_chart(profit_pivot_normalized.T)
+
 # Convert 'Order Date' to datetime
 dataframe['Order Date'] = pd.to_datetime(dataframe['Order Date'])
 
